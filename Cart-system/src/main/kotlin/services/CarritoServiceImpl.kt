@@ -15,8 +15,15 @@ class CarritoServiceImpl(private val carrito: Carrito) : CarritoService {
     }
 
     override fun eliminarProducto(idProducto: Int) {
-       // Implementación del método eliminarProducto
-    }
+        //Implementación del método eliminarProducto
+        val productoEnCarrito = carrito.productos.find { it.producto.id == idProducto }
+        if (productoEnCarrito != null) {
+            carrito.productos.remove(productoEnCarrito)
+            println("Producto eliminado del carrito.")
+        } else {
+            println("Producto no encontrado en el carrito.")
+            }
+        }
 
     override fun verCarrito() {
         if (carrito.productos.isEmpty()) {

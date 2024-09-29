@@ -51,12 +51,79 @@ class Menu {
         }
     }
 
-    private fun agregarProductoAlCarrito() {
-        // Implementación del método agregarProductoAlCarrito
+    private fun agregarProductoAlCarrito(){
+        /**
+         * Esta función permite al usuario agregar un producto al carrito de compras.
+         * El usuario ingresa el ID del producto y la cantidad deseada, y la funcion valida que ambos
+         * sean correctos. Si la entrada es valida, el producto se añade al carrito.
+         * Si el usuario cancela (ingresa 0) o si los datos son incorrectos, la operación se detiene.
+         */
+
+        println("\n--- Agregar Producto al Carrito ---")
+
+        var idProducto: Int?
+        var producto: Producto?
+
+        // Bucle para obtener un ID de producto válido
+        do {
+            print("Ingrese el ID del producto para agregar al carrito (ingrese 0 para terminar): ")
+            idProducto = readLine()?.toIntOrNull()
+
+            // Si el usuario ingresa 0, cancela la operación
+            if (idProducto == 0) {
+                println("Operación cancelada.")
+                return
+            }
+            // Busca el producto por ID en la lista de productos disponibles
+            producto = productosDisponibles.find { it.id == idProducto }
+
+            if (producto == null) {
+                println("ID de producto no válido. Intente nuevamente.")
+            }
+        } while (producto == null)
+
+        var cantidad: Int?
+
+        do {
+            print("Ingrese la cantidad que desea agregar al carrito (0 para terminar): ")
+            cantidad = readLine()?.toIntOrNull()
+
+            if (cantidad == 0) {
+                println("Operación terminada.")
+                return
+            }
+
+            if (cantidad == null || cantidad < 0) {
+                println("Cantidad no válida. Debe ingresar un número positivo.")
+            }else if (cantidad > producto.cantidadDisponible){
+                println("Cantidad no válida. No hay suficiente stock disponible.")
+            }
+
+        } while (cantidad == null || cantidad < 0 || cantidad > producto.cantidadDisponible)
+
+        carritoService.agregarProducto(producto, cantidad)
+        // Muestra un mensaje confirmando que el producto fue agregado al carrito
+        println("--- Se ha agregado ${cantidad} ${producto.nombre} al carrito  ---")
+
     }
 
     private fun eliminarProductoDelCarrito() {
-       // Implementación del método eliminarProductoDelCarrito
+        // Implementación del método eliminarProductoDelCarrito
+        if (carrito.productos.isEmpty()) {
+            println("El carrito está vacío. No hay productos para eliminar.")
+            return
+        }
+
+        println("\n--- Eliminar Producto del Carrito ---")
+        carritoService.verCarrito()  // Mostrar productos en el carrito antes de eliminarlos
+        print("Ingrese el ID del producto que desea eliminar: ")
+
+        val idProducto = readLine()?.toIntOrNull()
+        if (idProducto != null) {
+            carritoService.eliminarProducto(idProducto)
+        } else {
+            println("ID no válido. Por favor, ingrese un número válido.")
+        }
     }
 
 
