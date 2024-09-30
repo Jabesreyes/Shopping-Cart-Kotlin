@@ -11,7 +11,32 @@ class CarritoServiceImpl(private val carrito: Carrito) : CarritoService {
     private val decimalFormat = DecimalFormat("0.00")
 
     override fun agregarProducto(producto: Producto, cantidad: Int) {
-        // Implementación del método agregarProducto
+        // Verifica si la cantidad solicitada es mayor a la disponible
+        if (cantidad > producto.cantidadDisponible) {
+            println("Cantidad no disponible. Solo quedan ${producto.cantidadDisponible} unidades de ${producto.nombre}.")
+            return
+        }
+
+        // Busca si el producto ya esta en el carrito
+        val productoExistente = carrito.productos.find { it.producto.id == producto.id }
+
+        if (productoExistente != null) {
+            // Si ya esta en el carrito, aumentar la cantidad
+            val nuevaCantidad = productoExistente.cantidad + cantidad
+            if (nuevaCantidad > producto.cantidadDisponible) {
+                println("No puedes agregar más de ${producto.cantidadDisponible} unidades de ${producto.nombre}.")
+            } else {
+                productoExistente.cantidad = nuevaCantidad
+                println("Se agregaron $cantidad unidades de ${producto.nombre} al carrito.")
+            }
+        } else {
+            // Si no esta en el carrito, agregarlo
+            carrito.productos.add(ProductoSeleccionado(producto, cantidad))
+            println("${producto.nombre} se ha agregado al carrito con $cantidad unidades.")
+        }
+
+        // Actualiza la cantidad disponible del producto
+        producto.cantidadDisponible -= cantidad
     }
 
     override fun eliminarProducto(idProducto: Int) {
