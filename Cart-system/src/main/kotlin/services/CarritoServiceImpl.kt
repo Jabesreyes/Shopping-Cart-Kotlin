@@ -3,19 +3,27 @@ package com.mock.services
 import com.mock.interfaces.CarritoService
 import com.mock.models.Carrito
 import com.mock.models.Producto
-import com.mock.models.ProductoSeleccionado
 import java.text.DecimalFormat
 
 class CarritoServiceImpl(private val carrito: Carrito) : CarritoService {
 
     private val decimalFormat = DecimalFormat("0.00")
 
-    override fun agregarProducto(producto: Producto, cantidad: Int) {
-        // Implementación del método agregarProducto
+    // Implementar el método de eliminarProducto
+    override fun eliminarProducto(idProducto: Int) {
+        // Intentamos encontrar el producto por su ID
+        val productoAEliminar = carrito.productos.find { it.producto.id == idProducto }
+
+        if (productoAEliminar != null) {
+            carrito.productos.removeIf { it.producto.id == idProducto }
+            println("El producto '${productoAEliminar.producto.nombre}' ha sido eliminado del carrito.")
+        } else {
+            println("El producto con ID $idProducto no se encuentra en el carrito.")
+        }
     }
 
-    override fun eliminarProducto(idProducto: Int) {
-       // Implementación del método eliminarProducto
+    override fun agregarProducto(producto: Producto, cantidad: Int) {
+        // Implementación del método agregarProducto
     }
 
     override fun verCarrito() {
