@@ -86,5 +86,3 @@ Seleccione una opción:
 ## Contribuciones
 Si deseas contribuir a este proyecto, por favor abre un **Pull Request** o **Issue** en el repositorio.
 
-## Licencia
-Este proyecto está bajo la licencia MIT. Para más detalles, consulta el archivo `LICENSE`.
