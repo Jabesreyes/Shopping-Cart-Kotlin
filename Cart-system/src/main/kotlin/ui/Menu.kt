@@ -104,7 +104,7 @@ class Menu {
     }
 
     private fun eliminarProductoDelCarrito() {
-        // Implementación del método eliminarProductoDelCarrito
+        // Verificar si el carrito está vacío
         if (carrito.productos.isEmpty()) {
             println("El carrito está vacío. No hay productos para eliminar.")
             return
@@ -112,15 +112,17 @@ class Menu {
 
         println("\n--- Eliminar Producto del Carrito ---")
         carritoService.verCarrito()  // Mostrar productos en el carrito antes de eliminarlos
-        print("Ingrese el ID del producto que desea eliminar: ")
 
+        print("Ingrese el ID del producto que desea eliminar: ")
         val idProducto = readLine()?.toIntOrNull()
+
         if (idProducto != null) {
             carritoService.eliminarProducto(idProducto)
         } else {
             println("ID no válido. Por favor, ingrese un número válido.")
         }
     }
+
 
 
     private fun finalizarCompra() {

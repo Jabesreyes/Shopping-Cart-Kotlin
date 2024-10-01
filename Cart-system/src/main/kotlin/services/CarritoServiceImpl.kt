@@ -3,24 +3,12 @@ package com.mock.services
 import com.mock.interfaces.CarritoService
 import com.mock.models.Carrito
 import com.mock.models.Producto
+import com.mock.models.ProductoSeleccionado
 import java.text.DecimalFormat
 
 class CarritoServiceImpl(private val carrito: Carrito) : CarritoService {
 
     private val decimalFormat = DecimalFormat("0.00")
-
-    // Implementar el método de eliminarProducto
-    override fun eliminarProducto(idProducto: Int) {
-        // Intentamos encontrar el producto por su ID
-        val productoAEliminar = carrito.productos.find { it.producto.id == idProducto }
-
-        if (productoAEliminar != null) {
-            carrito.productos.removeIf { it.producto.id == idProducto }
-            println("El producto '${productoAEliminar.producto.nombre}' ha sido eliminado del carrito.")
-        } else {
-            println("El producto con ID $idProducto no se encuentra en el carrito.")
-        }
-    }
 
     override fun agregarProducto(producto: Producto, cantidad: Int) {
         // Verifica si la cantidad solicitada es mayor a la disponible
@@ -52,15 +40,22 @@ class CarritoServiceImpl(private val carrito: Carrito) : CarritoService {
     }
 
     override fun eliminarProducto(idProducto: Int) {
-        //Implementación del método eliminarProducto
+        // Intentamos encontrar el producto en el carrito
         val productoEnCarrito = carrito.productos.find { it.producto.id == idProducto }
+
         if (productoEnCarrito != null) {
+            // Restaurar la cantidad disponible del producto
+            productoEnCarrito.producto.cantidadDisponible += productoEnCarrito.cantidad
+
+            // Remover el producto del carrito
             carrito.productos.remove(productoEnCarrito)
-            println("Producto eliminado del carrito.")
+
+            println("Producto '${productoEnCarrito.producto.nombre}' (ID: ${productoEnCarrito.producto.id}) eliminado del carrito.")
         } else {
-            println("Producto no encontrado en el carrito.")
-            }
+            println("Producto con ID $idProducto no encontrado en el carrito.")
         }
+    }
+
 
     override fun verCarrito() {
         if (carrito.productos.isEmpty()) {
