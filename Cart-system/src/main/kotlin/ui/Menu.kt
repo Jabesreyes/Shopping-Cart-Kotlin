@@ -2,6 +2,7 @@ package com.mock.ui
 
 import com.mock.models.Carrito
 import com.mock.models.Producto
+import com.mock.models.ProductoSeleccionado
 import com.mock.services.CarritoServiceImpl
 import com.mock.services.FacturacionServiceImpl
 import java.text.DecimalFormat
@@ -51,65 +52,60 @@ class Menu {
         }
     }
 
-    private fun agregarProductoAlCarrito(){
-        /**
-         * Esta función permite al usuario agregar un producto al carrito de compras.
-         * El usuario ingresa el ID del producto y la cantidad deseada, y la funcion valida que ambos
-         * sean correctos. Si la entrada es valida, el producto se añade al carrito.
-         * Si el usuario cancela (ingresa 0) o si los datos son incorrectos, la operación se detiene.
-         */
+    /**
+     * Permite al usuario agregar productos al carrito validando el ID del producto y la cantidad.
+     *
+     * Se solicita al usuario un ID de producto y una cantidad, ambos validados. Si son validas,
+     * la función llama a `agregarProducto` en `CarritoServiceImpl` para incluir el producto al carrito.
+     *
+     * El proceso se repite mientras el usuario desee agregar más productos.
+     */
+    private fun agregarProductoAlCarrito() {
+        try{
+            println("\n--- Agregar Producto al Carrito ---")
+            mostrarProductos()
 
-        println("\n--- Agregar Producto al Carrito ---")
+            var continuar: String
 
-        var idProducto: Int?
-        var producto: Producto?
+            do{
+                println("Ingrese el ID del producto que desea agregar: ")
+                var idProducto = readLine()?.toIntOrNull()
 
-        // Bucle para obtener un ID de producto válido
-        do {
-            print("Ingrese el ID del producto para agregar al carrito (ingrese 0 para terminar): ")
-            idProducto = readLine()?.toIntOrNull()
+                // Validar que el ID ingresado sea válido
+                var productoSeleccionado = productosDisponibles.find { it.id == idProducto }
 
-            // Si el usuario ingresa 0, cancela la operación
-            if (idProducto == 0) {
-                println("Operación cancelada.")
-                return
-            }
-            // Busca el producto por ID en la lista de productos disponibles
-            producto = productosDisponibles.find { it.id == idProducto }
+                while(productoSeleccionado == null) {
+                    println("ID de producto no válido.")
+                    println("Ingrese el ID del producto que desea agregar: ")
+                    idProducto = readLine()?.toIntOrNull()
+                    productoSeleccionado = productosDisponibles.find { it.id == idProducto }
+                }
 
-            if (producto == null) {
-                println("ID de producto no válido. Intente nuevamente.")
-            }
-        } while (producto == null)
+                // Solicitar la cantidad a agregar
+                print("Ingrese la cantidad que desea agregar: ")
+                var cantidad = readLine()?.toIntOrNull()
 
-        var cantidad: Int?
+                // Validar que la cantidad sea un número válido y mayor que 0
+                while (cantidad == null || cantidad <= 0) {
+                    println("Cantidad no válida.")
+                    print("Ingrese la cantidad que desea agregar: ")
+                    cantidad = readLine()?.toIntOrNull()
+                }
 
-        do {
-            print("Ingrese la cantidad que desea agregar al carrito (0 para terminar): ")
-            cantidad = readLine()?.toIntOrNull()
-
-            if (cantidad == 0) {
-                println("Operación terminada.")
-                return
-            }
-
-            if (cantidad == null || cantidad < 0) {
-                println("Cantidad no válida. Debe ingresar un número positivo.")
-            }else if (cantidad > producto.cantidadDisponible){
-                println("Cantidad no válida. No hay suficiente stock disponible.")
-            }
-
-        } while (cantidad == null || cantidad < 0 || cantidad > producto.cantidadDisponible)
-
-        carritoService.agregarProducto(producto, cantidad)
-        // Muestra un mensaje confirmando que el producto fue agregado al carrito
-        println("--- Se ha agregado ${cantidad} ${producto.nombre} al carrito  ---")
-
+                carritoService.agregarProducto(productoSeleccionado, cantidad)
+                println("¿Desea agregar otro producto al carrito? (s/n)")
+                continuar = readLine().toString()
+            }while (continuar == "s" || continuar == "S")
+            
+        }catch (e: Exception){
+            println("Error al agregar producto al carrito")
+        }
     }
 
     private fun eliminarProductoDelCarrito() {
        // Implementación del método eliminarProductoDelCarrito
     }
+
 
     private fun finalizarCompra() {
         val factura = facturacionService.generarFactura()
