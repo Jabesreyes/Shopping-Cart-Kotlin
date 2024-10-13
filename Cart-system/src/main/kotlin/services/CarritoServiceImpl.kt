@@ -23,7 +23,7 @@ class CarritoServiceImpl(private val carrito: Carrito) : CarritoService {
         if (productoExistente != null) {
             // Si ya esta en el carrito, aumentar la cantidad
             val nuevaCantidad = productoExistente.cantidad + cantidad
-            if (nuevaCantidad > producto.cantidadDisponible) {
+            if ((productoExistente.cantidad - nuevaCantidad) > producto.cantidadDisponible) {
                 println("No puedes agregar más de ${producto.cantidadDisponible} unidades de ${producto.nombre}.")
             } else {
                 productoExistente.cantidad = nuevaCantidad
